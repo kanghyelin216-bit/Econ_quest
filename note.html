@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@latest/dist/galmuri.css"><link rel="stylesheet" href="style.css"><script src="config.js"></script><script src="common.js"></script><title>ECON QUEST - 내 경제 노트</title></head><body>
+<div id="nav"></div>
+<main>
+<span class="tag px">STAGE 2</span>
+<h1>내 경제 노트 만들기</h1>
+<p class="sub">공부한 경제 용어를 내 말로 풀어 쓰고, 그 뒤에 숨은 경제 원리까지 정리해보세요.</p>
+<div class="grid" id="ns"></div>
+<div class="panel"><h2 class="px">NEW NOTE</h2>
+ <div class="nform"><div><label>📘 경제 용어</label><input id="a" style="width:100%" placeholder="예) 기회비용"></div>
+ <div><label>💡 경제 원리</label><textarea id="b" placeholder="이 용어에 담긴 원리를 내 말로 적어보세요"></textarea></div></div>
+ <div class="row" style="margin-top:12px"><button class="g" id="add">노트 저장 ▶</button></div></div>
+<div class="hd2"><div>📘 경제 용어</div><div>💡 경제 원리</div></div>
+<div id="list"></div>
+<div class="two" style="margin-top:22px">
+ <div class="panel"><h2 class="px">원리 정리 팁</h2><ul class="check"><li>용어의 뜻을 한 문장으로 먼저 써보기</li><li>"왜 그럴까?"에 답하며 원인과 결과 적기</li><li>일상 속 예시를 하나 붙이기</li><li>주가나 내 매매와 연결해보기</li></ul></div>
+ <div class="panel"><h2 class="px">KEY WORDS</h2><p class="quote">희소성 · 기회비용 · 수요와 공급 · 인플레이션 · 금리 · 복리<br>키워드 하나씩 노트로 만들어 나만의 경제 사전을 완성해요.</p></div>
+</div></main>
+<script>
+nav('note.html');
+const seed=[{id:1,ex:1,a:'기회비용',b:'어떤 선택을 하려고 포기한 것들 중 가장 가치가 큰 것. 모든 선택에는 대가가 있고, 자원은 한정되어 있기 때문에 생기는 원리다.'},
+{id:2,ex:1,a:'인플레이션',b:'물가가 지속적으로 오르면 같은 돈의 구매력이 줄어든다. 그래서 현금만 들고 있으면 실질 가치가 줄어들 수 있다.'}];
+const L=()=>store.get('econNote',seed);
+const p=new URLSearchParams(location.search);if(p.get('term'))$('#a').value=p.get('term');
+function render(){
+  const l=L();
+  $('#ns').innerHTML=[['총 노트',l.length+'개'],['내가 쓴 노트',l.filter(x=>!x.ex).length+'개']].map(([a,b])=>`<div class="card"><small>${a}</small><b>${b}</b></div>`).join('');
+  $('#list').innerHTML=l.map(x=>`<div class="wrap1">${x.ex?'<span class="badge">예시 노트</span>':''}<div class="nrow"><div class="cell t" data-l="📘 경제 용어">${esc(x.a)}</div><div class="cell" data-l="💡 경제 원리">${esc(x.b)}</div></div><button class="del" onclick="del(${x.id})">삭제</button></div>`).join('')||'<div class="empty">작성된 노트가 없습니다.</div>';
+}
+function del(id){store.set('econNote',L().filter(x=>x.id!==id));render()}
+$('#add').onclick=()=>{const a=$('#a').value.trim(),b=$('#b').value.trim();if(!a)return alert('경제 용어를 입력해주세요');
+ store.set('econNote',[{id:Date.now(),a,b},...L()]);$('#a').value=$('#b').value='';render()};
+render();
+</script></body></html>

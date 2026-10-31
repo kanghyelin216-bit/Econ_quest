@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@latest/dist/galmuri.css"><link rel="stylesheet" href="style.css"><script src="config.js"></script><script src="common.js"></script><title>ECON QUEST - 경제 용어 공부</title></head><body>
+<div id="nav"></div>
+<main>
+<span class="tag px">STAGE 1</span>
+<h1>경제 용어 공부하기</h1>
+<p class="sub">한국예탁결제원 금융용어사전에서 무작위로 용어를 뽑아 하나씩 학습해요. 외운 용어와 다시 볼 용어는 자동으로 기록됩니다.</p>
+<div id="warn"></div>
+<div class="grid" id="st"></div>
+<div class="panel"><h2 class="px">TODAY'S TERM</h2>
+ <div class="term" id="tn">LOADING...</div>
+ <div class="desc" id="td"></div>
+ <div class="row"><button class="g" id="ok">✔ 외웠어요</button><button class="r" id="re">↻ 다시 볼래요</button><button id="nx">다음 용어 ▶</button><button class="w" id="nt">✎ 노트에 담기</button></div>
+ <div class="msg" id="msg"></div></div>
+<div class="panel"><h2 class="px">SEARCH</h2>
+ <div class="row"><input id="q" placeholder="용어 검색 (예: 배당)" style="width:240px"><button id="sb">검색 ▶</button></div>
+ <div class="row" id="sr" style="margin-top:12px"></div></div>
+<div class="panel"><h2 class="px">REVIEW LIST · 다시 볼 용어</h2><div class="row" id="rv"></div></div>
+</main>
+<script>
+nav('index.html');
+let queue=[],cur=null,sample=false;
+const K=()=>store.get('study',{known:[],review:[],seen:0});
+function stats(){const s=K();$('#st').innerHTML=[['오늘까지 본 용어',s.seen+'개'],['외운 용어',s.known.length+'개'],['다시 볼 용어',s.review.length+'개']].map(([a,b])=>`<div class="card"><small>${a}</small><b>${b}</b></div>`).join('');
+ $('#rv').innerHTML=s.review.map(n=>`<button class="chip" data-r="${esc(n)}">${esc(n)}</button>`).join('')||'<span class="dim">아직 없어요</span>';
+ document.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{$('#q').value=b.dataset.r;search()})}
+function show(t){cur=t;$('#tn').textContent=t.n;$('#td').textContent=t.d;$('#nt').onclick=()=>location.href='note.html?term='+encodeURIComponent(t.n)}
+async function batch(){
+  if(sample){queue=[...SAMPLE].sort(()=>Math.random()-.5);return}
+  try{
+    let tot=store.get('termTotal',0);
+    if(!tot){tot=(await callTerm({pageNo:1,numOfRows:1})).total;store.set('termTotal',tot)}
+    const pg=1+Math.floor(Math.random()*Math.max(1,Math.floor(tot/10)));
+    queue=(await callTerm({pageNo:pg,numOfRows:10})).items.sort(()=>Math.random()-.5);
+    if(!queue.length)throw new Error('조회된 용어가 없습니다');
+  }catch(e){sample=true;$('#warn').innerHTML='<div class="warn">⚠ API 연결 실패 → 샘플 용어로 표시 중입니다. (사유: '+esc(e.message)+')</div>';queue=[...SAMPLE].sort(()=>Math.random()-.5)}
+}
+async function next(){
+  $('#msg').textContent='';
+  if(!queue.length){$('#tn').textContent='LOADING...';$('#td').textContent='';await batch()}
+  const s=K();s.seen++;store.set('study',s);show(queue.shift());stats();
+}
+function mark(list){
+  if(!cur)return;const s=K();
+  s.known=s.known.filter(n=>n!==cur.n);s.review=s.review.filter(n=>n!==cur.n);s[list].push(cur.n);store.set('study',s);
+  $('#msg').style.color='var(--grn)';$('#msg').textContent=list==='known'?'✔ 외운 용어에 저장했어요!':'↻ 다시 볼 용어에 저장했어요!';stats();
+}
+async function search(){
+  const w=$('#q').value.trim();if(!w)return;$('#sr').innerHTML='LOADING...';
+  try{
+    let r;if(sample)r=SAMPLE.filter(t=>t.n.includes(w));else r=(await callTerm({term:w,pageNo:1,numOfRows:10})).items;
+    $('#sr').innerHTML=r.map((t,i)=>`<button class="chip" data-i="${i}">${esc(t.n)}</button>`).join('')||'<span class="dim">검색 결과가 없습니다</span>';
+    document.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{show(r[b.dataset.i]);scrollTo(0,0)});
+  }catch(e){$('#sr').innerHTML='<span class="msg">⚠ '+esc(e.message)+'</span>'}
+}
+$('#nx').onclick=next;$('#ok').onclick=()=>mark('known');$('#re').onclick=()=>mark('review');
+$('#sb').onclick=search;$('#q').onkeydown=e=>e.key==='Enter'&&search();
+stats();next();
+</script></body></html>

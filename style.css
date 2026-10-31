@@ -1,0 +1,51 @@
+:root{--bg:#f5f1e6;--p:#fffdf7;--p2:#f0ebdc;--ink:#2d3142;--dim:#6b6f80;--line:#2d3142;--up:#d6455d;--dn:#3b6fd4;--grn:#2f9e6f;--acc:#f2c94c;--soft:#e3dcc6}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:'Galmuri11','DungGeunMo',monospace;font-size:16px;line-height:1.8;
+background-image:linear-gradient(#2d314210 1px,transparent 1px),linear-gradient(90deg,#2d314210 1px,transparent 1px);background-size:32px 32px}
+.px{font-family:'Press Start 2P','Galmuri11',monospace;letter-spacing:1px}
+a{color:inherit;text-decoration:none}
+.up{color:var(--up)}.down{color:var(--dn)}.dim{color:var(--dim)}
+.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding:14px 24px;background:var(--p);border-bottom:3px solid var(--line)}
+.logo{color:var(--grn);font-size:16px;text-shadow:2px 2px 0 var(--soft)}
+nav a{display:inline-block;margin:3px 0 3px 8px;padding:5px 14px;border:2px solid var(--line);background:var(--p);font-size:14px;box-shadow:3px 3px 0 var(--line)}
+nav a:hover{background:var(--p2)}nav a.on{background:var(--acc)}
+main{max-width:1050px;margin:0 auto;padding:28px 16px 60px}
+h1{font-size:22px;margin-bottom:4px}
+.tag{display:inline-block;background:var(--grn);color:#fff;font-size:12px;padding:0 10px;margin-bottom:8px;border:2px solid var(--line)}
+.sub{color:var(--dim);margin-bottom:20px}
+.panel{background:var(--p);border:3px solid var(--line);box-shadow:5px 5px 0 var(--line);padding:20px;margin-bottom:22px}
+.panel h2{font-size:16px;margin-bottom:12px;color:var(--grn)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.card{background:var(--p);border:2px solid var(--line);padding:10px 14px;box-shadow:3px 3px 0 var(--line)}
+.card small{color:var(--dim);display:block;font-size:13px}.card b{font-size:20px}
+input,textarea{font-family:inherit;font-size:16px;color:var(--ink);background:#fff;border:2px solid var(--line);padding:8px 12px}
+textarea{width:100%;min-height:90px;resize:vertical}
+input:focus,textarea:focus{outline:3px solid var(--acc)}
+button{font-family:inherit;font-size:15px;cursor:pointer;background:var(--acc);color:var(--ink);font-weight:bold;border:2px solid var(--line);padding:8px 16px;box-shadow:3px 3px 0 var(--line)}
+button:hover{filter:brightness(1.05)}button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
+button.g{background:var(--grn);color:#fff}button.r{background:var(--up);color:#fff}button.w{background:var(--p2)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.term{font-size:26px;font-weight:bold;margin:6px 0 12px}
+.desc{white-space:pre-wrap;max-height:340px;overflow:auto;background:var(--p2);border:2px solid var(--soft);padding:14px;margin-bottom:16px}
+.msg{margin:8px 0;color:var(--up);font-size:14px}
+.warn{background:#fff3cd;border:2px solid var(--line);padding:8px 14px;margin-bottom:18px;font-size:14px}
+.chip{padding:3px 12px;font-weight:normal;box-shadow:none;background:var(--p2)}
+.empty{text-align:center;padding:26px;color:var(--dim)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:760px){.two{grid-template-columns:1fr}}
+.hd2{display:grid;grid-template-columns:1fr 1.6fr}
+.hd2 div,.jhead div{padding:10px 14px;background:var(--ink);color:#fff;border:2px solid var(--line);font-size:14px;text-align:center}
+.nform{display:grid;grid-template-columns:1fr 1.6fr;gap:14px}
+.nform label,.jform label{display:block;color:var(--grn);font-size:14px;font-weight:bold;margin-bottom:4px}
+.nrow{display:grid;grid-template-columns:1fr 1.6fr}
+.cell{padding:14px;background:var(--p);border:2px solid var(--line);margin:-2px 0 0 0;white-space:pre-wrap}
+.cell.t{font-weight:bold;background:#fff8dc}
+.wrap1{position:relative;margin-bottom:14px}
+.badge{display:inline-block;background:var(--grn);color:#fff;font-size:12px;padding:0 10px;margin-bottom:4px;border:2px solid var(--line)}
+.del{position:absolute;top:2px;right:2px;padding:0 8px;font-size:13px;background:var(--up);color:#fff;box-shadow:none}
+/* journal */
+.jhead,.jrow{display:grid;grid-template-columns:1fr 1.3fr 1.3fr}
+.jform{display:grid;grid-template-columns:1fr 1.3fr 1.3fr;gap:14px}
+@media(max-width:760px){.jhead,.hd2{display:none}.jrow,.jform,.nrow,.nform{grid-template-columns:1fr}.cell::before{content:attr(data-l);display:block;color:var(--grn);font-size:12px;margin-bottom:4px}}
+.quote{border-left:5px solid var(--acc);padding-left:14px;color:var(--dim)}
+.check li{margin:4px 0 4px 22px}
